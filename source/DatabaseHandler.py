@@ -1,5 +1,5 @@
 import sqlite3
-from source.LogHandler import LogHandler
+from LogHandler import LogHandler
 
 
 class DatabaseHandler:
