@@ -85,12 +85,19 @@ class DatabaseHandler:
         :param data: list of strings, data of a row to be inserted to the given table
         :param columns: list of columns where the given data should be inserted
         """
-        keyword = "INSERT INTO"
-        keyword2 = "VALUES"
-        cols = "("+",".join(columns)+")"
-        args = "("+",".join(data)+")"
-        query = " ".join([keyword, table_name, cols, keyword2, args]) + ";"
-        self.execute_query(query)
+        if self.is_registered(table_name,data,columns) == True:
+            self.__lh.warning("Record already inserted")
+        else:
+            try:
+                keyword = "INSERT INTO"
+                keyword2 = "VALUES"
+                cols = "("+",".join(columns)+")"
+                args = "("+",".join(data)+")"
+                query = " ".join([keyword, table_name, cols, keyword2, args]) + ";"
+                self.execute_query(query)
+            except Exception as e:
+                self.__lh.exceptionHandling(e)
+            
 
     def select(self, table_name, cols=[], condition=[], distinct=False):
         """
@@ -216,7 +223,16 @@ class DatabaseHandler:
                 statement = ",".join([statement, tmp])
         return statement
 
-    def is_registered(self, table_name, tuple_list=[]):
-        # TODO
+    def is_registered(self, table_name, data_list=[], col_list=[]):
         ret = False
+        new_list = []
+        self.__lh.debug(data_list)
+        self.__lh.debug(col_list)
+        for x in range(len(data_list)):
+            new_list.append( (data_list[x], "=", col_list[x]) )
+
+        result =  []
+        #result = self.select(table_name,"*",self.tuple_list_to_statement(new_list))
+        if result != []:
+            ret = True
         return ret
